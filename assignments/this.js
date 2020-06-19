@@ -1,17 +1,17 @@
-console.log(this.document === document); // Output
+console.log(this.document === document); // Output true
 
-console.log(this === window); //Output
+console.log(this === window); //Output true
 
 var myFunction = function() {
   console.log(this);
 };
-myFunction(); // Output
+myFunction(); // Output  window
 
 function f1() {
   "use strict";
   return this;
 }
-console.log(f1() === window); //Output
+console.log(f1() === window); //Output false as this will be undefined and not window.
 
 function foo() {
   console.log("Simple function call");
@@ -19,15 +19,20 @@ function foo() {
 }
 
 foo(); //Output ??
-console.log(this === window)(
-  // Output
+// output would be simple function call
+// true
+
+console.log(this === window)
+  // Output true
 
   // This for IIFE
-  function() {
+(function() {
     console.log("Anonymous function invocation");
     console.log(this === window);
   }
 )(); //Output
+// Anonymous function invocation
+// true
 
 // This for IIFE in strict mode
 function foo() {
@@ -37,12 +42,14 @@ function foo() {
 }
 
 foo(); // Output
+//Simple function call
+//false
 
 var myObject = {};
 myObject.someMethod = function() {
   console.log(this);
 };
-myObject.someMethod(); //Value Of This
+myObject.someMethod(); //Value Of This is the someMethod(fn)
 
 // This refers to the New Instance
 
@@ -56,9 +63,9 @@ function Person(fn, ln) {
 }
 
 let person = new Person("John", "Reed");
-person.displayName(); // Output
+person.displayName(); // Output "Name: John Reed"
 let person2 = new Person("Paul", "Adams");
-person2.displayName(); // Output
+person2.displayName(); // Output "Name: Paul Adams"
 
 //This refers to the invoker Object
 function foo() {
@@ -75,10 +82,11 @@ let user = {
   }
 };
 
-user.foo(); // Output
-let fun1 = user.foo1;
-fun1(); // Output ??
-user.foo1(); // Output ??
+
+user.foo(); // Output //this will refer to user object
+let fun1 = user.foo1; //"Simple function call" false
+fun1(); // Output ?? true
+user.foo1(); // Output ?? false
 
 //this will call apply and bind
 
@@ -90,13 +98,13 @@ var module = {
   }
 };
 
-module.getX(); // Output ??
+module.getX(); // Output 81
 
 var retrieveX = module.getX;
-retrieveX(); //Output ??
+retrieveX(); //Output 9
 
 var boundGetX = retrieveX.bind(module);
-boundGetX(); // Output ??
+boundGetX(); // Output 81
 
 // Call with new constructor
 
@@ -110,9 +118,9 @@ function Person(fn, ln) {
 }
 
 let person = new Person("John", "Reed");
-person.displayName(); // Output
+person.displayName(); // Output "Name: John Reed"
 let person2 = new Person("Paul", "Adams");
-person2.displayName(); // Output
+person2.displayName(); // Output "Name: Paul Adams"
 
 person.displayName.call(person2); // Output ??
 
@@ -131,19 +139,19 @@ obj.getThis3 = obj.getThis.bind(obj);
 obj.getThis4 = obj.getThis2.bind(obj);
 
 // Output
-obj.getThis();
+obj.getThis(); //Window object
 
 // Output
-obj.getThis.call(a);
+obj.getThis.call(a); //Window object
 
 // Output
-obj.getThis2();
+obj.getThis2(); //obj itself
 
 // Output
-obj.getThis2.call(a);
+obj.getThis2.call(a); // object with key "a"
 
 // Output
-obj.getThis3();
+obj.getThis3(); //window
 
 // Output
 obj.getThis3.call(a);
